@@ -1,0 +1,10 @@
+# Configs
+configs/
+
+**/node_modules/*
+
+# Data Mounting
+data/
+
+# Logs
+logs/

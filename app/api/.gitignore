@@ -1,0 +1,11 @@
+# Node Modules
+node_modules/
+
+# App Configs
+/config
+
+# Logs
+logs/
+
+# Bundles
+dist/
