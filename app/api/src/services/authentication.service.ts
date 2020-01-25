@@ -60,7 +60,7 @@ export class AuthenticationService {
 
   private configureJWTAuth() { }
 
-  public localAuth(request: Request, response: Response) {
+  public localAuth = (request: Request, response: Response) => {
     passport.authenticate('local', async (error, user, message) => {
       if (error) {
         this.logger.log('error', 'Error authenticating locally', { error })
@@ -74,12 +74,14 @@ export class AuthenticationService {
         return;
       }
 
+      this.logger.log('info', `User successfully logged in: `, { user: user.email });
+
       delete user.password;
 
       const token = jwt.sign(user, this.secret, { algorithm: 'HS512', expiresIn: this.tokenLifespan });
 
       response.status(303).json({ token });
-    })
+    })(request, response);
   }
 
   public jwtAuth() { }
