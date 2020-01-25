@@ -5,11 +5,8 @@ import { promisify } from 'util';
 
 import Application from '../classes/application.class';
 
+const readDir = promisify(fs.readdir);
 const readFile = promisify(fs.readFile);
-
-// Route Modules
-import usersRoute from './users.route';
-//
 
 /**
  * This module is designed to register express http endpoints.  Modules should be loaded into this file with the follwoing syntax:
@@ -20,7 +17,7 @@ import usersRoute from './users.route';
  *
  * @param app Application instance
  */
-export default function routes(app: Application): void {
+export default async function routes(app: Application): Promise<void> {
   app.express.get('/', async (request: express.Request, response: express.Response) => {
     const packageJSON = await readFile(path.join(app.environment.CWD, 'package.json'), 'utf8');
     const { name, version, description, homepage } = JSON.parse(packageJSON);
@@ -30,6 +27,13 @@ export default function routes(app: Application): void {
     response.status(200).json({ name, version, description, homepage });
   });
 
-  usersRoute(app);
+  const directory = await readDir(path.resolve(__dirname));
+
+  const routeFiles = directory.filter( item => /.*\.route\.(js|ts)/.test(item));
+
+  await Promise.all(routeFiles.map( async file => {
+    app.logger.log('verbose', `Importing: ${file}`)
+    await import(path.resolve(__dirname, file)).then( module => module.initialize(app));
+  }));
 
 }

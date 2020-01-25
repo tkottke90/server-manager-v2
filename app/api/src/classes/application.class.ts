@@ -60,4 +60,8 @@ export default class Application {
   public listen(port: string, callback: () => void) {
     this.server.listen(port, callback);
   }
+
+  public async registerRoutes(initializer: (app: Application) => void): Promise<void> {
+    await initializer(this);
+  }
 }

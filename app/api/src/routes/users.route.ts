@@ -11,6 +11,6 @@ class UsersRoute extends DataModelRoute {
 
 }
 
-export default (app: Application) => {
+export function initialize(app: Application) {
   return new UsersRoute(app);
 };
