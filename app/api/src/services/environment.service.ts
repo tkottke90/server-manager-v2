@@ -13,6 +13,7 @@ class EnvironmentService {
   public DATABASE_PORT: number;
   public SECRET: string;
   public SALT: number;
+  public TOKEN_LIFESPAN: string;
 
   constructor() {
     this.loadVariables();
@@ -59,6 +60,7 @@ class EnvironmentService {
     this.DATABASE_PORT = Number.parseInt(this.loadVariable('DATABASE_PORT'), 10);
     this.SECRET = this.loadSecretVariable('SECRET');
     this.SALT = Number.parseInt(this.loadVariable('SALT'), 10);
+    this.TOKEN_LIFESPAN = this.loadVariable('TOKEN_LIFESPAN');
 
     console.log('');
   }
