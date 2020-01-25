@@ -25,12 +25,6 @@ abstract class BaseRoute {
     this.app = app;
     this.routeName = route;
 
-    // Log HTTP Requests with middleware
-    this.router.use((request: express.Request, response: express.Response, next) => {
-      app.logger.log('http', `${request.method} ${request.baseUrl}`);
-      next();
-    });
-
     app.logger.log('debug', `Setting up routes for ${route} ...`);
   }
 
