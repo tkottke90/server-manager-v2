@@ -88,6 +88,27 @@ export class AuthenticationService {
 
   public jwtSocketAuth() { }
 
+  public refreshToken = async (token: string): Promise<string|boolean> => {
+    try {
+      var validToken = jwt.verify(token, this.secret);
+    } catch (err) {
+      this.logger.log('debug', `Error validating token: ${err.message}`);
+      return false;
+    }
+
+    if (validToken) {
+      const tokenContents: any = jwt.decode(token);
+
+      const { User } = this.database.models;
+
+      const user = await User.findOne({ where: { id: tokenContents.id } });
+
+      return jwt.sign(user, this.secret, { algorithm: 'HS512', expiresIn: this.tokenLifespan });
+    }
+
+    return false;
+  }
+
   public hashPasswords() { }
 
   public scrubPasswords() { }
