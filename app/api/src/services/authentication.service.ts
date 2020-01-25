@@ -4,20 +4,25 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
 import Application from '../classes/application.class';
+import { Sequelize } from 'sequelize/types';
 import { Logger } from './logger.service';
 
 import { Strategy as JWTStrategy, ExtractJwt } from 'passport-jwt';
 import { Strategy as LocalStrategy } from 'passport-local';
 
-export class AuthenticationService {
+
+export default class AuthenticationService {
   logger: Logger;
   secret: string;
   salt: number;
   tokenLifespan: string;
+
+  database: Sequelize;
   
   constructor(app: Application) {
     this.configureLocalAuth(app);
 
+    this.database = app.database;
     this.logger = app.logger;
     this.secret = app.environment.SECRET;
     this.salt = app.environment.SALT;
