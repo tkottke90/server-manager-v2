@@ -22,8 +22,6 @@ export default async function routes(app: Application): Promise<void> {
     const packageJSON = await readFile(path.join(app.environment.CWD, 'package.json'), 'utf8');
     const { name, version, description, homepage } = JSON.parse(packageJSON);
 
-    app.logger.log('http', 'Request made to "/"');
-
     response.status(200).json({ name, version, description, homepage });
   });
 
