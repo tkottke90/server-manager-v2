@@ -4,14 +4,14 @@ import { createServer, Server } from 'http';
 import * as fs from 'fs';
 import * as path from 'path';
 import { promisify } from 'util';
+
 import logger from '../services/logger.service';
 import { Logger } from '../services/logger.service';
 import environment from '../services/environment.service';
+import AuthenticationService from '../services/authentication.service';
 
 import { Sequelize } from 'sequelize';
 import sequelize from '../models/index';
-
-const readFile = promisify(fs.readFile);
 
 interface IApplicationOptions {
   logHttp?: 'on' | 'dev' | 'off';
@@ -25,8 +25,13 @@ export default class Application {
   public environment: any;
 
   public database: Sequelize;
+
+  // Socket IO Properties
   private server: Server;
   private ioServer: io.Server;
+
+  // Authentication
+  public authentication: AuthenticationService;
 
   constructor(options?: IApplicationOptions) {
     this.database = sequelize();
@@ -41,6 +46,8 @@ export default class Application {
     this.environment = environment;
 
     this.port = environment.PORT;
+
+    this.authentication = new AuthenticationService(this);
 
     // Configure logging of http traffic
     if (options && (options?.logHttp === 'on' || (environment.IS_DEVELOPMENT && options.logHttp === 'dev')) ) {
