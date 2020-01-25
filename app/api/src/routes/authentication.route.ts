@@ -10,9 +10,9 @@ class AuthenticationRoute extends BaseRoute {
     this.router.post('/refresh', this.refreshToken);
 
     this.setup({
-      rootRoute: {
-        post: app.authentication.localAuth
-        }
+        routes: [
+          { method: 'post', path: '/', action: app.authentication.localAuth }
+        ]
     });
   }
 

@@ -10,6 +10,7 @@ import { Logger } from './logger.service';
 import { Strategy as JWTStrategy, ExtractJwt } from 'passport-jwt';
 import { Strategy as LocalStrategy } from 'passport-local';
 
+import { IContext } from '../interfaces';
 
 export default class AuthenticationService {
   logger: Logger;
@@ -18,7 +19,7 @@ export default class AuthenticationService {
   tokenLifespan: string;
 
   database: Sequelize;
-  
+
   constructor(app: Application) {
     this.configureLocalAuth(app);
 
@@ -38,17 +39,22 @@ export default class AuthenticationService {
         try {
           const { User } = app.database.models;
 
+          console.time('query');
           const user: any = await User.findOne({ where: { email: username } });
+          console.timeEnd('query')
 
           if (!user) {
-            return done(null, false, { message: 'Invalid Credentials' });
+            return done(null, false, { message: 'Invalid Username or Password' });
           }
 
           if (!user.active) {
             return done(null, false, { message: 'Deactivated User' })
           }
 
-          const isMatch = await bcrypt.compare(password, user.password);
+          this.logger.log('debug', 'Start compare');
+          console.time('compare')
+          const isMatch = await bcrypt.compare(password, user.dataValues.password);
+          console.timeEnd('compare');
 
           if (!isMatch) {
             return done(null, false, { message: 'Invalid Credentials' });
@@ -65,35 +71,37 @@ export default class AuthenticationService {
 
   private configureJWTAuth() { }
 
-  public localAuth = (request: Request, response: Response) => {
-    passport.authenticate('local', async (error, user, message) => {
-      if (error) {
-        this.logger.log('error', 'Error authenticating locally', { error })
-        response.status(500).send('Login Error');
-        return;
-      }
+  public localAuth = (context: IContext) => {
+    return new Promise((resolve, reject) => {
+      passport.authenticate('local', async (error, user, message) => {
+        if (error) {
+          this.logger.log('error', 'Error authenticating locally', { error })
+          reject({ code: 500, message });
+          return;
+        }
 
-      if (!user) {
-        this.logger.log('warn', 'Failed Login Attempt');
-        response.status(401).send(message);
-        return;
-      }
+        if (!user) {
+          this.logger.log('warn', 'Failed Login Attempt');
+          reject({ code: 401, message });
+          return;
+        }
 
-      this.logger.log('info', `User successfully logged in: `, { user: user.email });
+        this.logger.log('info', `User successfully logged in`, { user: user.email });
 
-      delete user.password;
+        delete user.password;
 
-      const token = jwt.sign(user, this.secret, { algorithm: 'HS512', expiresIn: this.tokenLifespan });
+        const token = await jwt.sign(user, this.secret, { algorithm: 'HS512', expiresIn: this.tokenLifespan });
 
-      response.status(303).json({ token });
-    })(request, response);
+        resolve({ token });
+      })(context.request, context.response);
+    });
   }
 
   public jwtAuth() { }
 
   public jwtSocketAuth() { }
 
-  public refreshToken = async (token: string): Promise<string|boolean> => {
+  public refreshToken = async (token: string): Promise<string | boolean> => {
     try {
       var validToken = jwt.verify(token, this.secret);
     } catch (err) {
@@ -117,4 +125,12 @@ export default class AuthenticationService {
   public hashPasswords() { }
 
   public scrubPasswords() { }
+
+  public async getUser(token: string) {
+    const tokenContents: any = jwt.decode(token);
+
+    const { User } = this.database.models;
+
+    return await User.findOne({ where: { id: tokenContents.id } });
+  }
 }
