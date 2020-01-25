@@ -44,7 +44,6 @@ abstract class BaseRoute {
     this.router.options('/', options.rootRoute.options ? options.rootRoute.options : this.options);
 
     this.app.express.use(this.routeName, this.router);
-
   }
 
   public get(request: express.Request, response: express.Response) {
