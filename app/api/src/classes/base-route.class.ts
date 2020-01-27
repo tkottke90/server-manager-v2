@@ -79,6 +79,7 @@ abstract class BaseRoute {
         app: this.app,
         params: request.params,
         query: request.query,
+        data: request.body,
         user: request.headers.authorization ? this.app.authentication.getUser(request.headers.authorization.split(' ')[1]) : undefined,
       };
 
@@ -130,7 +131,7 @@ abstract class BaseRoute {
 
   private handleError(location: 'before' | 'action' | 'after', context: IContext, response: express.Response): void {
     this.app.logger.log('error', 'Error handler called ', { error: context.error })
-    response.status(500).json({ error: context.error });
+    response.status(context.error.code).json({ error: context.error });
   }
 }
 
