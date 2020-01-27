@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import Application from '../classes/application.class';
 import BaseRoute from '../classes/base-route.class';
+import { IContext } from '../interfaces';
 
 class AuthenticationRoute extends BaseRoute {
 
@@ -11,7 +12,8 @@ class AuthenticationRoute extends BaseRoute {
 
     this.setup({
         routes: [
-          { method: 'post', path: '/', action: app.authentication.localAuth }
+          { method: 'post', path: '/', action: app.authentication.localAuth },
+          { method: 'post', path: '/refresh', action: ( context: IContext) => undefined },
         ]
     });
   }
