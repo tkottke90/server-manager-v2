@@ -3,9 +3,26 @@ import BaseRoute from './base-route.class';
 import Application from './application.class';
 
 import { IQuery, QueryClass } from './query.class';
+import { IContext, IHook } from '../interfaces';
 
 interface IConfigurationOptions {
   exclusions?: string[];
+}
+
+interface IHooksArray {
+  all: IHook[];
+  find: IHook[];
+  get: IHook[];
+  create: IHook[];
+  update: IHook[];
+  updateOrCreate: IHook[];
+  delete: IHook[];
+}
+
+interface IModelHooks {
+  before: IHooksArray;
+  after: IHooksArray;
+  error: IHooksArray;
 }
 
 const generateResponse = (paginate: boolean, data: any, limit: number, skip: number, total: number) => {
@@ -30,7 +47,7 @@ export default class DataModelRoute extends BaseRoute {
     }
   }
 
-  public configure(modelName: string) {
+  public configure(modelName: string, modelHooks: IModelHooks) {
     if (!this.app.database.models[modelName]) {
       this.app.logger.log('error', `Invalid Model - Please check Sequelize Configuration`);
       process.exit(2);
@@ -38,199 +55,205 @@ export default class DataModelRoute extends BaseRoute {
 
     this.model = this.app.database.models[modelName];
 
-    this.router.get('/:id', this.getById(this.model));
-    this.router.patch('/:id', this.patch(this.model));
-    this.router.put('/:id', this.put(this.model));
-    this.router.delete('/:id', this.delete(this.model));
+    // this.router.get('/:id', this.getById(this.model));
+    // this.router.patch('/:id', this.patch(this.model));
+    // this.router.put('/:id', this.put(this.model));
+    // this.router.delete('/:id', this.delete(this.model));
+
+    const beforeHooks = modelHooks.before;
+    const afterHooks = modelHooks.after;
+    const errorHooks = modelHooks.error;
 
     this.setup({
-      rootRoute: {
-        get: this.get(this.model),
-        post: this.post(this.model)
-      },
+      routes: [
+        { method: 'get', path: '/', action: this.get, beforeHooks: [ ...beforeHooks.all, ...beforeHooks.find ], afterHooks: [ ...afterHooks.all, ...afterHooks.find ]},
+        { method: 'get', path: '/:id', action: this.getById, beforeHooks: [ ...beforeHooks.all, ...beforeHooks.get ], afterHooks: [ ...afterHooks.all, ...afterHooks.get ]},
+        { method: 'post', path: '/', action: this.post, beforeHooks: [ ...beforeHooks.all, ...beforeHooks.create ], afterHooks: [ ...afterHooks.all, ...afterHooks.create ]},
+        { method: 'patch', path: '/:id', action: this.patch, beforeHooks: [ ...beforeHooks.all, ...beforeHooks.update ], afterHooks: [ ...afterHooks.all, ...afterHooks.update ]},
+        { method: 'put', path: '/:id', action: this.put, beforeHooks: [ ...beforeHooks.all, ...beforeHooks.updateOrCreate ], afterHooks: [ ...afterHooks.all, ...afterHooks.updateOrCreate ]},
+        { method: 'delete', path: '/:id', action: this.delete, beforeHooks: [ ...beforeHooks.all, ...beforeHooks.delete ], afterHooks: [ ...afterHooks.all, ...afterHooks.delete ]},
+      ],
       paginate: true
     })
   }
 
   // Find User
-  public get(model: any): (request: Request, response: Response) => void {
-    return async (request: Request, response: Response) => {
-      const query: QueryClass = new QueryClass(request.query);
+  public get = (context: IContext) => {
+    return new Promise( async (resolve, reject) => {
+      const query: QueryClass = new QueryClass(context.query);
       let result: any;
 
       const queryObj = query.toSequelizeQuery();
       queryObj.attributes = { exclude: this.exclusions };
 
       try {
-        result = await model.findAll(queryObj);
+        result = await this.model.findAll(queryObj);
       } catch (err) {
         this.app.logger.error(err, (message) => `Sequelize Error during update in GET Request: ${message}`);
-        response.status(500).send('Internal Server Error: Error Getting Users');
+        reject({ _code: 500, message: 'Internal Server Error: Error Getting Users'});
         return;
       }
 
-      response.json(generateResponse(query.paginate, result, query.limit, query.skip, await model.count()));
-    };
+      resolve(generateResponse(query.paginate, result, query.limit, query.skip, await this.model.count()));
+    });  
   }
 
   // Get User
-  public getById(model: any): (request: Request, response: Response) => void {
-    return async (request: Request, response: Response) => {
+  public getById = (context: IContext) => {
+    return new Promise ( async (resolve, reject) => {
       let result: any;
 
       // Check if table has primary key
-      if (model._hasPrimaryKeys) {
+      if (this.model._hasPrimaryKeys) {
         // Generate a new query object
         const query = {} as IQuery;
         // Add the primary key defined in the model and the id sent in via the url
-        query[model.primaryKeyField] = request.params.id;
+        query[this.model.primaryKeyField] = context.params.id;
 
         // Query the Database
         try {
-          result = await model.findOne({
+          result = await this.model.findOne({
             where: query,
             attributes: { exclude: this.exclusions }
           });
         } catch (err) {
           this.app.logger.error(err, (message) => `Sequelize Error during get in GET by ID Request: ${message}`);
-          response.status(500).send('Error in Model Get');
+          reject({ _code: 500, message: 'Error in Model Get' });
           return;
         }
       }
 
       if (!result) {
-        response.status(404).send('Nothing Found with that ID');
+        reject({ _code: 404, message: 'Nothing Found with that ID' });
         return;
       }
 
-      response.status(200).send(result);
-    };
+      resolve(result);
+    });
   }
 
   // Create User
-  public post(model: any): (request: Request, response: Response) => void {
-    return async (request: Request, response: Response) => {
+  public post = (context: IContext) => {
+    return new Promise( async (resolve, reject) => {
       let result: any;
 
       // Query the Database
       try {
-        result = await model.create(request.body, {
+        result = await this.model.create(context.data, {
           attributes: { exclude: this.exclusions }
         });
       } catch (err) {
         this.app.logger.error(err, (message) => `Sequelize Error during POST Request: ${message}`);
-        response.status(500).send(`Error POSTing to ${this.routeName} - please check logs`);
+        reject({ _code: 500, message: `Error POSTing to ${this.routeName} - please check logs` });
         return;
       }
 
-      response.status(201).send(result);
-    };
+      resolve(result);
+    });
   }
 
   // Update User
-  public put(model: any): (request: Request, response: Response) => void {
-    return async (request: Request, response: Response) => {
+  public put = (context: IContext) => {
+    return new Promise(async (resolve, reject) => {
       // Generate a new query object
       const query = {} as IQuery;
       // Add the primary key defined in the model and the id sent in via the url
-      query[model.primaryKeyField] = request.params.id;
+      query[this.model.primaryKeyField] = context.params.id;
 
       try {
-        const result = await model.findOne({
+        const result = await this.model.findOne({
           where: query,
           attributes: { exclude: this.exclusions }
         });
 
         // console.dir(result);
         if (result) {
-          const updatedItem = await result.update(request.body, { attributes: { exclude: this.exclusions } });
-          response.status(200).json(updatedItem);
+          const updatedItem = await result.update(context.data, { attributes: { exclude: this.exclusions } });
+          resolve(updatedItem);
           return;
         }
 
-        const newItem = await model.create(request.body, { attributes: { exclude: this.exclusions } });
-        response.status(201).json(newItem);
+        const newItem = await this.model.create(context.data, { attributes: { exclude: this.exclusions } });
+        resolve({ _code: 201, data: newItem });
 
       } catch (err) {
         this.app.logger.error(err, (message) => `Sequelize Error during PUT Request: ${message}`);
-        response.status(500).send(`Error PUTing to ${this.routeName} - please check logs`);
+        reject({ _code: 500, message: `Error PUTing to ${this.routeName} - please check logs`});
         return;
       }
-
-      response.json({});
-    };
+    });
   }
 
-  public patch(model: any): (request: Request, response: Response) => void {
-    return async (request: Request, response: Response) => {
+  public patch = (context: IContext) => {
+    return new Promise(async (resolve, reject) => {
       let result: any;
 
       // Check if table has primary key
-      if (model._hasPrimaryKeys) {
+      if (this.model._hasPrimaryKeys) {
         // Generate a new query object
         const query = {} as IQuery;
         // Add the primary key defined in the model and the id sent in via the url
-        query[model.primaryKeyField] = request.params.id;
+        query[this.model.primaryKeyField] = context.params.id;
 
         // Query the Database
         try {
-          result = await model.findOne({
+          result = await this.model.findOne({
             where: query,
             attributes: { exclude: this.exclusions }
           });
         } catch (err) {
           this.app.logger.error(err, (message) => `Sequelize Error during get in PATCH Request: ${message}`);
-          response.status(500).send(`Error PATCHing to ${this.routeName} - please check logs`);
+          reject({ _code: 500, message: `Error PATCHing to ${this.routeName} - please check logs`});
           return;
         }
       }
 
       if (!result) {
         this.app.logger.log('warn', 'Invalid PATCH request - no record found');
-        response.status(404).send('Nothing Found with that ID - please check logs');
+        reject({ _code: 400, message: 'Nothing Found with that ID - please check logs'});
         return;
       }
 
       try {
-        result.update(request.body);
+        result.update(context.data);
       } catch (err) {
         this.app.logger.error(err, (message) => `Sequelize Error during update in PATCH Request: ${message}`);
-        response.status(500).send('Error Updating in PATCH request - please check logs');
+        reject({ _code: 500, message: 'Error Updating in PATCH request - please check logs'});
         return;
       }
 
       // Should only return 1 result
-      response.status(200).send(result);
-    };
+      resolve(result);
+    });
   }
 
   // Delete User
-  public delete(model: any): (request: Request, response: Response) => void {
-    return async (request: Request, response: Response) => {
+  public delete = (context: IContext) => {
+    return new Promise(async (resolve, reject) => {
       let result: any;
 
       // Check if table has primary key
-      if (model._hasPrimaryKeys) {
+      if (this.model._hasPrimaryKeys) {
         // Generate a new query object
         const query = {} as IQuery;
         // Add the primary key defined in the model and the id sent in via the url
-        query[model.primaryKeyField] = request.params.id;
+        query[this.model.primaryKeyField] = context.params.id;
 
         // Query the Database
         try {
-          result = await model.findOne({
+          result = await this.model.findOne({
             where: query
           });
         } catch (err) {
           this.app.logger.error(err, (message) => `Sequelize Error during get in DELETE Request: ${message}`);
-          response.status(500).send(`Error DELETing to ${this.routeName} - please check logs`);
+          reject({ _code: 500, message: `Error DELETing to ${this.routeName} - please check logs` });
           return;
         }
       }
 
       if (!result) {
         this.app.logger.log('warn', 'Invalid DELETE request - no record found');
-        response.status(404).send('Nothing Found with that ID');
+        reject({ _code: 404, message: 'Nothing Found with that ID' });
         return;
       }
 
@@ -238,17 +261,13 @@ export default class DataModelRoute extends BaseRoute {
         result.destroy();
       } catch (err) {
         this.app.logger.error(err, (message) => `Sequelize Error during delete in DELETE Request: ${message}`);
-        response.status(500).send('Error Updating in DELETE request - please check logs');
+        reject({ _code: 500, message: 'Error Updating in DELETE request - please check logs' });
         return;
       }
 
       // Should only return 1 result
-      response.status(204).json();
-    };
-  }
-
-  public options(request: Request, response: Response) {
-    response.json({});
+      resolve({ _code: 201, data: {} });
+    });
   }
 
 }
