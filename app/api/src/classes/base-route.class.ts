@@ -125,7 +125,7 @@ abstract class BaseRoute {
       }
 
       const status = context.result._code || 200;
-      const data = context.result._code ? context.result.data | context.result;
+      const data = context.result._code ? context.result.data : context.result;
       response.status(status).json(data);
 
     })
