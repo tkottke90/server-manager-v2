@@ -3,26 +3,10 @@ import BaseRoute from './base-route.class';
 import Application from './application.class';
 
 import { IQuery, QueryClass } from './query.class';
-import { IContext, IHook } from '../interfaces';
+import { IContext, IModelHooks } from '../interfaces';
 
 interface IConfigurationOptions {
   exclusions?: string[];
-}
-
-interface IHooksArray {
-  all: IHook[];
-  find: IHook[];
-  get: IHook[];
-  create: IHook[];
-  update: IHook[];
-  updateOrCreate: IHook[];
-  delete: IHook[];
-}
-
-interface IModelHooks {
-  before: IHooksArray;
-  after: IHooksArray;
-  error: IHooksArray;
 }
 
 const generateResponse = (paginate: boolean, data: any, limit: number, skip: number, total: number) => {

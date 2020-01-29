@@ -1,8 +1,10 @@
-import { IContext, IHook, IRoute, TRouteMethods } from './routing.interfaces';
+import { IContext, IHook, IRoute, TRouteMethods, IHooksArray, IModelHooks } from './routing.interfaces';
 
 export {
     IContext,
     IHook,
+    IHooksArray,
+    IModelHooks,
     IRoute,
 
     TRouteMethods
