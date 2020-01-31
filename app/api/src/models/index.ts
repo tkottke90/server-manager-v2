@@ -30,12 +30,12 @@ export default function sequelizeService() {
   const UserModel = sequelize.model('User');
   UserModel.count().done(async (count: number) => {
     if (count <= 0) {
-      logger.log('info', 'User Table Empty - Creating Default User', { email: 'tkottke90@gmail.com' });
+      logger.log('info', 'User Table Empty - Creating Default User', { email: 'admin@tdkottke.com' });
       try {
         UserModel.create({
           firstName: 'Admin',
           lastName: 'User',
-          email: 'tkottke90@gmail.com',
+          email: 'admin@tdkottke.com',
           password: await bcrypt.hash('12345', environment.SALT),
           type: 'admin',
           active: true,
