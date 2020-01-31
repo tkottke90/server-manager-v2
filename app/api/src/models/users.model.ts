@@ -7,7 +7,8 @@ import {
     DataType,
     AllowNull,
     PrimaryKey,
-    AutoIncrement
+    AutoIncrement,
+    Unique
   } from 'sequelize-typescript';
 
 @Table
@@ -27,6 +28,7 @@ import {
     public lastName: string;
 
     @AllowNull(false)
+    @Unique
     @Column(DataType.STRING)
     public email: string;
 
