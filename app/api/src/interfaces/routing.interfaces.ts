@@ -19,6 +19,7 @@ export interface IContext {
   readonly params: { [key: string]: any }
   readonly query: { [key: string]: any }
   readonly user: any;
+  readonly method: string;
   data?: any;
   result?: any;
   error?: any
