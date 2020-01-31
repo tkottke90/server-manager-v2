@@ -2,7 +2,7 @@ import express from 'express';
 import { Router } from 'express';
 import Application from './application.class';
 
-import { IContext, IRoute } from '../interfaces';
+import { IContext, IRoute, IHooksArray, IHook } from '../interfaces';
 
 interface IOptions {
   routes: IRoute[];
@@ -37,14 +37,6 @@ abstract class BaseRoute {
       })
       .forEach( route => this.generateRoute(route));
 
-
-
-    // this.router.get('/', options.rootRoute.get ? options.rootRoute.get : this.get);
-    // this.router.post('/', options.rootRoute.post ? options.rootRoute.post : this.post);
-    // this.router.put('/', options.rootRoute.put ? options.rootRoute.put : this.put);
-    // this.router.delete('/', options.rootRoute.delete ? options.rootRoute.delete : this.delete);
-    // this.router.options('/', options.rootRoute.options ? options.rootRoute.options : this.options);
-
     this.app.express.use(this.routeName, this.router);
   }
 
@@ -77,6 +69,7 @@ abstract class BaseRoute {
         request,
         response,
         app: this.app,
+        method: request.method,
         params: request.params,
         query: request.query,
         data: request.body,
@@ -85,6 +78,9 @@ abstract class BaseRoute {
 
       const _beforeHooks = route.beforeHooks || [];
       const _afterHooks = route.afterHooks || [];
+      const _errorHooks = route.errorHooks || [];
+
+      const errorHandler = this.handleError(_errorHooks);
 
       // Before Hooks
       for await (let hook of this.processHooks(context, _beforeHooks )) {
@@ -93,7 +89,7 @@ abstract class BaseRoute {
 
         // If there is an error or the result is returned, then 
         if (context.error) {
-          this.handleError('before', context, response);
+          errorHandler('before', context, response);
           return;
         }
 
@@ -105,10 +101,9 @@ abstract class BaseRoute {
         try {
           context.result = await route.action(context);
         } catch (err) {
-          console.error(err);
-          this.app.logger.log('error', 'Error post action', { err })
           context.error = err;
-          this.handleError('action', context, response);
+          errorHandler('action', context, response);
+          return;
         }
       }
 
@@ -119,7 +114,7 @@ abstract class BaseRoute {
 
         // If there is an error or the result is returned, then 
         if (context.error) {
-          this.handleError('after', context, response);
+          errorHandler('after', context, response);
           return;
         }
       }
@@ -131,9 +126,17 @@ abstract class BaseRoute {
     })
   }
 
-  private handleError(location: 'before' | 'action' | 'after', context: IContext, response: express.Response): void {
-    this.app.logger.log('error', 'Error handler called ', { error: context.error })
-    response.status(context.error.code).json({ error: context.error });
+  private handleError = (errorHooks: IHook[]) => async (location: 'before' | 'action' | 'after', context: IContext, response: express.Response): Promise<void> => {
+    this.app.logger.log('debug', 'Error handler called ', { error: context.error, method: context.method, step: location });
+    
+    for await (let hook of this.processHooks(context, errorHooks)) {
+      const { _context, _hookIndex } = hook;
+      context = _context;
+    }
+    
+    const code = context.error?._code || 500;
+    
+    response.status(code).json({ error: context.error });
   }
 }
 
