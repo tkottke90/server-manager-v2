@@ -250,7 +250,7 @@ export default class DataModelRoute extends BaseRoute {
       }
 
       // Should only return 1 result
-      resolve({ _code: 201, data: {} });
+      resolve({ _code: 204, data: {} });
     });
   }
 
