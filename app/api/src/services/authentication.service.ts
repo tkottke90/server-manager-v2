@@ -20,13 +20,14 @@ export default class AuthenticationService {
   database: Sequelize;
 
   constructor(app: Application) {
-    this.configureLocalAuth(app);
-
     this.database = app.database;
     this.logger = app.logger;
     this.secret = app.environment.SECRET;
     this.salt = app.environment.SALT;
     this.tokenLifespan = app.environment.TOKEN_LIFESPAN || '1h';
+
+    this.configureLocalAuth(app);
+    this.configureJWTAuth();
 
     app.express.use(passport.initialize());
   }
@@ -65,7 +66,13 @@ export default class AuthenticationService {
     ));
   }
 
-  private configureJWTAuth() { }
+  private configureJWTAuth() {
+    passport.use(new JWTStrategy({
+      secretOrKey: this.secret,
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      algorithms: [ 'HS512' ]
+    }, (jwtPayload, done) => done(null, jwtPayload)) );
+  }
 
   public localAuth = (context: IContext) => {
     return new Promise((resolve, reject) => {
