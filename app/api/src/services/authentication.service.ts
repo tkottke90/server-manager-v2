@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
 import Application from '../classes/application.class';
+import { Socket } from 'socket.io';
 import { Sequelize } from 'sequelize/types';
 import { Logger } from './logger.service';
 
@@ -100,9 +101,24 @@ export default class AuthenticationService {
     });
   }
 
-  public jwtAuth() { }
+  public jwtAuth = passport.authenticate('jwt', { session: false });
 
-  public jwtSocketAuth() { }
+  public jwtSocketAuth = (socket: Socket) => async (packet: any, next: () => void) => {
+    // Socket Packet: [ event name, data, token, meta-data ]
+    const [,,token,...rest ] = packet;
+
+    try {
+      jwt.verify(token, this.secret);
+    }
+    catch (err) {
+      this.logger.error(err, (message) => `Invalid JWT Token - ${message}`);
+      socket.emit('token invalid');
+      return;
+    }
+
+    // Else allow request
+    next();
+  }
 
   public refreshToken = async (token: string): Promise<string | boolean> => {
     try {
@@ -125,9 +141,15 @@ export default class AuthenticationService {
     return false;
   }
 
-  public hashPasswords() { }
+  public async hashPasswords(password: string) {
+    return bcrypt.hash(password, this.salt);
+  }
 
-  public scrubPasswords() { }
+  public scrubPasswords(object: any) {
+    const _objectWithPassword = object;
+    delete _objectWithPassword.password;
+    return _objectWithPassword;
+  }
 
   public async getUser(token: string) {
     const tokenContents: any = jwt.decode(token);
