@@ -1,4 +1,3 @@
-import { Request, Response } from 'express';
 import passport from 'passport';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
