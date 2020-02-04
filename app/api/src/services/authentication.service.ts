@@ -51,10 +51,7 @@ export default class AuthenticationService {
             return done(null, false, { message: 'Deactivated User' })
           }
 
-          this.logger.log('debug', 'Start compare');
-          console.time('compare')
           const isMatch = await bcrypt.compare(password, user.dataValues.password);
-          console.timeEnd('compare');
 
           if (!isMatch) {
             return done(null, false, { message: 'Invalid Credentials' });
