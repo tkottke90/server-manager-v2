@@ -9,6 +9,14 @@ interface IConfigurationOptions {
   exclusions?: string[];
 }
 
+interface ISequelizeResult {
+  dataValues?: any;
+  _previousDataValues?: any;
+  _changed?: any;
+  _options?: any;
+  isNewRecord: boolean;
+}
+
 const generateResponse = (paginate: boolean, data: any, limit: number, skip: number, total: number) => {
   return paginate ?
     { total, limit, skip, data} :
@@ -119,13 +127,11 @@ export default class DataModelRoute extends BaseRoute {
   // Create User
   public post = (context: IContext) => {
     return new Promise( async (resolve, reject) => {
-      let result: any;
+      let result: ISequelizeResult;
 
       // Query the Database
       try {
-        result = await this.model.create(context.data, {
-          attributes: { exclude: this.exclusions }
-        });
+        result = await this.model.create(context.data);
       } catch (err) {
         this.app.logger.error(err, (message) => `Sequelize Error during POST Request: ${message}`);
         reject({ _code: 500, message: `Error POSTing to ${this.routeName} - please check logs` });
