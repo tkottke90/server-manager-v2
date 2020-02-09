@@ -141,8 +141,9 @@ export default class AuthenticationService {
     return false;
   }
 
-  public async hashPasswords(password: string) {
-    return bcrypt.hash(password, this.salt);
+  public async hashString(password: string) {
+    this.logger.log('debug', 'Values', { password, salt: this.salt });
+    return await bcrypt.hash(password, this.salt);
   }
 
   public scrubPasswords(object: any) {
