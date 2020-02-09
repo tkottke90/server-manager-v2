@@ -1,11 +1,2 @@
-import { IContext, IHook, IRoute, TRouteMethods, IHooksArray, IModelHooks } from './routing.interfaces';
-
-export {
-    IContext,
-    IHook,
-    IHooksArray,
-    IModelHooks,
-    IRoute,
-
-    TRouteMethods
-}
+export * from './routing.interfaces';
+export * from './docker.interfaces';
