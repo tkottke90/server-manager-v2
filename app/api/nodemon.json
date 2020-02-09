@@ -2,5 +2,9 @@
   "watch": ["src"],
   "ext": "ts",
   "ignore": ["src/public"],
-  "exec": "NODE_ENV=development ts-node src/"
+  "exec": "NODE_ENV=development ts-node src/",
+  "delay": 2500,
+  "events": {
+    "crash": "echo '[nodemon] Nodemon app crashed...killing port 3001';sh -c 'lsof -i :${PORT:-3001} -t | xargs kill'"
+  }
 }
