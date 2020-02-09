@@ -47,11 +47,6 @@ export default class DataModelRoute extends BaseRoute {
 
     this.model = this.app.database.models[modelName];
 
-    // this.router.get('/:id', this.getById(this.model));
-    // this.router.patch('/:id', this.patch(this.model));
-    // this.router.put('/:id', this.put(this.model));
-    // this.router.delete('/:id', this.delete(this.model));
-
     const beforeHooks = modelHooks.before;
     const afterHooks = modelHooks.after;
     const errorHooks = modelHooks.error;
