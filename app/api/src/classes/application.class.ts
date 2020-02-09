@@ -52,7 +52,7 @@ export default class Application {
     // Configure logging of http traffic
     if (options && (options?.logHttp === 'on' || (environment.IS_DEVELOPMENT && options.logHttp === 'dev')) ) {
       this.express.use((request: express.Request, response: express.Response, next: () => void) => {
-        this.logger.log('http', `Request made to "${request.path}"`);
+        this.logger.log('http', `${request.method.toUpperCase()} request made to "${request.path}"`);
         next();
       });
     }
