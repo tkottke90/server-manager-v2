@@ -101,7 +101,30 @@ export default class AuthenticationService {
     });
   }
 
-  public jwtAuth = passport.authenticate('jwt', { session: false });
+  public jwtAuth = (context: IContext) => {
+    return new Promise<IContext>((resolve, reject) => {
+      passport.authenticate('jwt', { session: false }, async (error, user, message) => {
+        if (error) {
+          this.logger.log('error', 'Error authenticating with jwt', { error })
+          context.error = { _code: 500, message }
+          resolve(context);
+          return;
+        }
+
+        if (!user) {
+          this.logger.log('warn', 'Failed Login Attempt');
+          context.error = { _code: 401, message }
+          resolve(context);
+          return;
+        }
+
+        delete user.password;
+        context.user = user;
+
+        resolve(context);
+      })(context.request, context.response);
+    });
+  }
 
   public jwtSocketAuth = (socket: Socket) => async (packet: any, next: () => void) => {
     // Socket Packet: [ event name, data, token, meta-data ]
