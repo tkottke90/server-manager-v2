@@ -18,7 +18,7 @@ export interface IContext {
   readonly app: Application;
   readonly params: { [key: string]: any }
   readonly query: { [key: string]: any }
-  readonly user: any;
+  user: any;
   readonly method: string;
   data?: any;
   result?: any;
@@ -26,7 +26,7 @@ export interface IContext {
 }
 
 export interface IHook {
-  (context: IContext): IContext
+  (context: IContext): IContext | Promise<IContext>
 }
 
 export interface IHooksArray {
