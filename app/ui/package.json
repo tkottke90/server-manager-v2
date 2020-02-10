@@ -4,20 +4,62 @@
   "description": "",
   "main": "dist/index.html",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "babel src -d lib",
+    "lint": "eslint \"src/**/*.js\"",
+    "bundle": "npm run build && rollup -c; cp -rf src/index.html dist/;cp -rf src/index.css dist/",
+    "test": "NODE_ENV=testing mocha tests/ --exit",
+    "watch": "npm run bundle; chokidar \"src/**/*.*\" -c \"npm run bundle\"",
+    "docker:dev": "docker-compose -f docker-compose.dev.yaml down -v; sudo docker-compose -f docker-compose.dev.yaml up -d",
+    "docker:build": "",
+    "docker:run": "",
+    "release": "standard-version -r",
+    "release-rc": "standard-version -p"
   },
   "author": "Thomas Kottke <t.kottke90@gmail.com>",
   "license": "MIT",
   "devDependencies": {
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.8.4",
+    "@babel/plugin-proposal-class-properties": "^7.8.3",
+    "@babel/plugin-proposal-decorators": "^7.8.3",
+    "@babel/preset-env": "^7.8.4",
+    "eslint": "^6.8.0",
     "rollup": "^1.31.0",
-    "rollup-plugin-typescript2": "^0.25.3",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-multi-entry": "^2.1.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
     "socket.io-client": "^2.3.0",
-    "standard-version": "^7.1.0",
-    "tslint": "^6.0.0",
-    "typescript": "^3.7.5"
+    "standard-version": "^7.1.0"
   },
   "dependencies": {
     "lit-element": "^2.2.1",
     "lit-html": "^1.1.2"
+  },
+  "babel": {
+    "presets": [
+      [
+        "@babel/preset-env",
+        {
+          "modules": false,
+          "targets": {
+            "esmodules": true
+          }
+        }
+      ]
+    ],
+    "plugins": [
+      [
+        "@babel/plugin-proposal-decorators",
+        {
+          "legacy": true
+        }
+      ],
+      [
+        "@babel/plugin-proposal-class-properties",
+        {
+          "loose": true
+        }
+      ]
+    ]
   }
 }
