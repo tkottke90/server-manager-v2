@@ -4,14 +4,15 @@
   "description": "",
   "main": "dist/index.html",
   "scripts": {
+    "clean": "rm -rf lib; rm -rf dist",
     "build": "babel src -d lib",
     "lint": "eslint \"src/**/*.js\"",
-    "bundle": "npm run build && rollup -c; cp -rf src/index.html dist/;cp -rf src/index.css dist/",
+    "bundle": "npm run build && npx rollup -c; cp -rf src/index.html dist/;cp -rf src/index.css dist/",
     "test": "NODE_ENV=testing mocha tests/ --exit",
     "watch": "npm run bundle; chokidar \"src/**/*.*\" -c \"npm run bundle\"",
     "docker:dev": "docker-compose -f docker-compose.dev.yaml down -v; sudo docker-compose -f docker-compose.dev.yaml up -d",
-    "docker:build": "",
-    "docker:run": "",
+    "docker:build": "echo 'docker:build'",
+    "docker:run": "echo 'docker:run'",
     "release": "standard-version -r",
     "release-rc": "standard-version -p"
   },
@@ -23,6 +24,7 @@
     "@babel/plugin-proposal-class-properties": "^7.8.3",
     "@babel/plugin-proposal-decorators": "^7.8.3",
     "@babel/preset-env": "^7.8.4",
+    "babel-cli": "^6.26.0",
     "eslint": "^6.8.0",
     "rollup": "^1.31.0",
     "rollup-plugin-commonjs": "^10.1.0",
@@ -34,32 +36,5 @@
   "dependencies": {
     "lit-element": "^2.2.1",
     "lit-html": "^1.1.2"
-  },
-  "babel": {
-    "presets": [
-      [
-        "@babel/preset-env",
-        {
-          "modules": false,
-          "targets": {
-            "esmodules": true
-          }
-        }
-      ]
-    ],
-    "plugins": [
-      [
-        "@babel/plugin-proposal-decorators",
-        {
-          "legacy": true
-        }
-      ],
-      [
-        "@babel/plugin-proposal-class-properties",
-        {
-          "loose": true
-        }
-      ]
-    ]
   }
 }
