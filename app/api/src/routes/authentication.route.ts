@@ -11,12 +11,12 @@ class AuthenticationRoute extends BaseRoute {
     this.setup({
         routes: [
           { method: 'post', path: '/', action: app.authentication.localAuth },
-          { method: 'post', path: '/refresh', action: (context: IContext) => undefined },
+          { method: 'post', path: '/refresh', action: (context: IContext) => this.refreshToken },
         ]
     });
   }
 
-  refreshToken = async (request: Request, response: Response) => {
+  public refreshToken = async (request: Request, response: Response) => {
     const token = request.headers.authorization.split(' ')[1];
     const result = await this.app.authentication.refreshToken(token);
     response.json({ token: result });
