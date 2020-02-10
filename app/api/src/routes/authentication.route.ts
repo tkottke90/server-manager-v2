@@ -8,12 +8,10 @@ class AuthenticationRoute extends BaseRoute {
   constructor(app: Application) {
     super(app, '/authenticate');
 
-    this.router.post('/refresh', this.refreshToken);
-
     this.setup({
         routes: [
           { method: 'post', path: '/', action: app.authentication.localAuth },
-          { method: 'post', path: '/refresh', action: ( context: IContext) => undefined },
+          { method: 'post', path: '/refresh', action: (context: IContext) => undefined },
         ]
     });
   }
