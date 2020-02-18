@@ -9,14 +9,114 @@
 // Be sure that you only ever include this mixin once!
 @include mat-core();
 
+$md-theme-primary: (
+    50 : #edecf1,
+    100 : #d2d0dc,
+    200 : #b4b1c5,
+    300 : #9592ae,
+    400 : #7f7a9c,
+    500 : #68638b,
+    600 : #605b83,
+    700 : #555178,
+    800 : #4b476e,
+    900 : #3a355b,
+    A100 : #b5adff,
+    A200 : #887aff,
+    A400 : #5a47ff,
+    A700 : #442dff,
+    contrast: (
+        50 : #000000,
+        100 : #000000,
+        200 : #000000,
+        300 : #000000,
+        400 : #ffffff,
+        500 : #ffffff,
+        600 : #ffffff,
+        700 : #ffffff,
+        800 : #ffffff,
+        900 : #ffffff,
+        A100 : #000000,
+        A200 : #000000,
+        A400 : #ffffff,
+        A700 : #ffffff,
+    )
+);
+
+$md-theme-accent: (
+    50 : #fde9f9,
+    100 : #f9c8ef,
+    200 : #f5a3e4,
+    300 : #f17ed9,
+    400 : #ee63d1,
+    500 : #eb47c9,
+    600 : #e940c3,
+    700 : #e537bc,
+    800 : #e22fb5,
+    900 : #dd20a9,
+    A100 : #ffffff,
+    A200 : #ffe1f6,
+    A400 : #ffaee7,
+    A700 : #ff95e0,
+    contrast: (
+        50 : #000000,
+        100 : #000000,
+        200 : #000000,
+        300 : #000000,
+        400 : #000000,
+        500 : #000000,
+        600 : #000000,
+        700 : #ffffff,
+        800 : #ffffff,
+        900 : #ffffff,
+        A100 : #000000,
+        A200 : #000000,
+        A400 : #000000,
+        A700 : #000000,
+    )
+);
+
+$md-theme-warn: (
+    50 : #f2fbfe,
+    100 : #dff5fc,
+    200 : #caeffa,
+    300 : #b5e8f7,
+    400 : #a5e3f6,
+    500 : #95def4,
+    600 : #8ddaf3,
+    700 : #82d5f1,
+    800 : #78d1ef,
+    900 : #67c8ec,
+    A100 : #ffffff,
+    A200 : #ffffff,
+    A400 : #f6fdff,
+    A700 : #ddf6ff,
+    contrast: (
+        50 : #000000,
+        100 : #000000,
+        200 : #000000,
+        300 : #000000,
+        400 : #000000,
+        500 : #000000,
+        600 : #000000,
+        700 : #000000,
+        800 : #000000,
+        900 : #000000,
+        A100 : #000000,
+        A200 : #000000,
+        A400 : #000000,
+        A700 : #000000,
+    )
+);
+
+
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
-$server-manager-ui-primary: mat-palette($mat-indigo);
-$server-manager-ui-accent: mat-palette($mat-pink, A200, A100, A400);
+$server-manager-ui-primary: mat-palette($md-theme-primary);
+$server-manager-ui-accent: mat-palette($md-theme-accent A200, A100, A400);
 
 // The warn palette is optional (defaults to red).
-$server-manager-ui-warn: mat-palette($mat-red);
+$server-manager-ui-warn: mat-palette($md-theme-warn);
 
 // Create the theme object (a Sass map containing all of the palettes).
 $server-manager-ui-theme: mat-light-theme($server-manager-ui-primary, $server-manager-ui-accent, $server-manager-ui-warn);
