@@ -11,8 +11,6 @@ export class BaseComponent implements OnInit {
   @Input() public menuEnabled: Boolean = false;
   @Input() title = 'Server Manager';
 
-  sidenavOpened = false;
-
   constructor() {}
 
   ngOnInit(): void {
