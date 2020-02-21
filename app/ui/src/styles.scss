@@ -113,7 +113,7 @@ $md-theme-warn: (
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
 $server-manager-ui-primary: mat-palette($md-theme-primary);
-$server-manager-ui-accent: mat-palette($md-theme-accent A200, A100, A400);
+$server-manager-ui-accent: mat-palette($md-theme-accent, A200, A100, A400);
 
 // The warn palette is optional (defaults to red).
 $server-manager-ui-warn: mat-palette($md-theme-warn);
