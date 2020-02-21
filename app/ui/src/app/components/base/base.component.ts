@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, Input } from '@angular/core';
 
 @Component({
   selector: 'sm-base',
@@ -8,7 +8,12 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 })
 export class BaseComponent implements OnInit {
 
-  constructor() { }
+  @Input() public menuEnabled: Boolean = false;
+  @Input() title = 'Server Manager';
+
+  sidenavOpened = false;
+
+  constructor() {}
 
   ngOnInit(): void {
   }

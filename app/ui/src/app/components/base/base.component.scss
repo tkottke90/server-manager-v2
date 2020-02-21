@@ -1,0 +1,41 @@
+@import '../../styles/mixins.scss';
+
+mat-toolbar {
+  display: grid;
+  grid-template-columns: 3rem 1fr 1fr;
+
+  .toolbar--menu {
+    grid-column: 1;
+  }
+
+  .toolbar--title {
+    grid-column: 2;
+  }
+
+  .toolbar--actions {
+    grid-column: 3;
+  }
+}
+
+mat-sidenav {
+  display: grid;
+  grid-template-rows: 3rem 1fr;
+  @include media(500px) {
+    width: 80vw;
+  }
+
+  .sidenav--close {
+    grid-row: 1;
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+}
+
+.content {
+  width: 100%;
+  height: 100%; 
+
+  overflow-y: auto;
+  overflow-x: hidden;
+}

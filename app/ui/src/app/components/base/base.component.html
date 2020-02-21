@@ -1,1 +1,22 @@
-<p>base works!</p>
+<mat-sidenav-container class="example-container">
+  <mat-sidenav #sidenav mode="over" [(opened)]="sidenavOpened">
+    <div class="sidenav--close">
+      <button mat-icon-button (click)="sidenav.close()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    <ng-content class="sidenav-content" select="[sidenav-content]"></ng-content>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <mat-toolbar color="primary">
+      <button class="toolbar--menu" *ngIf="menuEnabled" mat-icon-button (click)="sidenav.toggle()">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <div class="toolbar--title"><ng-content select="[toolbar-title]"></ng-content></div>
+      <div class="toolbar--actions"><ng-content select="[toolbar-actions]"></ng-content></div>
+    </mat-toolbar>
+    <div class="content">
+      <ng-content></ng-content>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>
