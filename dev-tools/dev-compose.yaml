@@ -1,0 +1,32 @@
+version: '3'
+services:
+    api:
+        container_name: sm_api_dev
+        image: tkottke/server-manager-api
+        restart: unless-stopped
+        environment:
+            - NODE_ENV=production
+            - PORT=3001
+            - DATABASE_NAME=server-manager
+            - DATABASE_USER=postgres
+            - DATABASE_PASSWORD=postgres
+            - DATABASE_HOST=db
+            - DATABASE_PORT=5432
+            - SECRET=DDA42352BCD41BBD71ED13454BD6B
+            - SALT=15
+            - TOKEN_LIFESPAN=1h
+        ports:
+            - 3001:3001
+        volumes:
+            - ./logs/api/:/usr/app/logs
+            - /var/run/docker.sock:/var/run/docker.sock
+    db:
+        container_name: postgres
+        image: postgres:11-alpine
+        restart: always
+        environment:
+            POSTGRES_DB: server-manager
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: postgres
+        ports:
+            - 5432:5432
