@@ -1,6 +1,6 @@
 
 /**
- * Base class for HTTP requests to the docker socket 
+ * Base class for HTTP requests to the docker socket
  */
 export class DockerRequest {
     public path: string;
@@ -12,7 +12,7 @@ interface IDockerContainerPorts {
   IP?: string;
   PrivatePort?: number;
   PublicPort?: number;
-  Type?: string; 
+  Type?: string;
 }
 
 interface IDockerContainerMounts {
@@ -21,7 +21,7 @@ interface IDockerContainerMounts {
   Destination: string;
   Mode: string;
   RW: boolean;
-  Propagation: string; 
+  Propagation: string;
 }
 
 export interface IDockerContainer {
@@ -41,8 +41,8 @@ export interface IDockerContainer {
   NetworkSettings?: {
     [key: string]: any;
   };
-  Mounts?: IDockerContainerMounts[]; 
-  Config?: any
+  Mounts?: IDockerContainerMounts[];
+  Config?: any;
 }
 
 export interface IDockerActor {
@@ -52,7 +52,7 @@ export interface IDockerActor {
     image?: string;
     name?: string;
     [key: string]: any;
-  }
+  };
 }
 
 export interface IDockerEvent {
@@ -73,7 +73,7 @@ export interface IAppContainer {
   image: {
     name: string;
     id: string;
-  },
+  };
   ports: string[];
   state: string;
   status?: string;

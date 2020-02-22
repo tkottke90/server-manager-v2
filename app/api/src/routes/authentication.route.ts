@@ -26,11 +26,11 @@ class AuthenticationRoute extends BaseRoute {
         context.app.logger.error(err);
         reject(err);
       }
-      
+
     });
   }
 }
 
 export function initialize(app: Application) {
   return new AuthenticationRoute(app);
-};
+}

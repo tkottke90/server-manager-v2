@@ -17,7 +17,7 @@ interface IMessageOptions {
 
 class DockerRoute extends BaseRoute {
   private socketPath = '/var/run/docker.sock';
-  
+
   constructor(app: Application) {
     super(app, '/docker');
 
@@ -50,7 +50,7 @@ class DockerRoute extends BaseRoute {
         }}
       );
     });
-  };
+  }
 
   public getContainerByName = (context: IContext) => {
     return new Promise(async (resolve, reject) => {
@@ -65,14 +65,14 @@ class DockerRoute extends BaseRoute {
         }}
       );
     });
-  };
+  }
 
   private httpRequest(options: IClientRequestOptions, events?: IMessageOptions): http.ClientRequest {
     const httpOptions = {
       socketPath: this.socketPath,
       ...options
-    }
-    
+    };
+
     return http.get(httpOptions, (response: http.IncomingMessage ) => {
       response.setEncoding('utf8');
       let output = '';
@@ -89,7 +89,7 @@ class DockerRoute extends BaseRoute {
 
       response.on('data', events.onData || defaultDataFn );
       response.on('error', (err) => this.app.logger.error(err));
-      response.on('end', () => {      
+      response.on('end', () => {
         const endFn = events.onEnd ? events.onEnd : defaultEndFn;
 
         endFn(errorStatus, output);
@@ -97,7 +97,6 @@ class DockerRoute extends BaseRoute {
     });
   }
 }
-
 
 export function initialize(app: Application) {
   return new DockerRoute(app);

@@ -1,33 +1,31 @@
 import Application from '../classes/application.class';
 import { Request, Response } from 'express';
 
-export type TRouteMethods = 'get' | 'post' | 'patch' | 'put' | 'delete' | 'options'
+export type TRouteMethods = 'get' | 'post' | 'patch' | 'put' | 'delete' | 'options';
 
 export interface IRoute {
   method: TRouteMethods;
   path: string;
   action: (context: IContext) => any;
-  beforeHooks?: IHook[]
-  afterHooks?: IHook[],
-  errorHooks?: IHook[],
+  beforeHooks?: IHook[];
+  afterHooks?: IHook[];
+  errorHooks?: IHook[];
 }
 
 export interface IContext {
   readonly request: Request;
   readonly response: Response;
   readonly app: Application;
-  readonly params: { [key: string]: any }
-  readonly query: { [key: string]: any }
+  readonly params: { [key: string]: any };
+  readonly query: { [key: string]: any };
   user: any;
   readonly method: string;
   data?: any;
   result?: any;
-  error?: any
+  error?: any;
 }
 
-export interface IHook {
-  (context: IContext): IContext | Promise<IContext>
-}
+export type IHook = (context: IContext) => IContext | Promise<IContext>;
 
 export interface IHooksArray {
   all: IHook[];

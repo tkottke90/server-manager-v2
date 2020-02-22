@@ -61,7 +61,7 @@ export default class DataModelRoute extends BaseRoute {
         { method: 'delete', path: '/:id', action: this.delete, beforeHooks: [ ...beforeHooks.all, ...beforeHooks.delete ], afterHooks: [ ...afterHooks.all, ...afterHooks.delete ], errorHooks: [ ...errorHooks.all, ...errorHooks.delete ]},
       ],
       paginate: true
-    })
+    });
   }
 
   // Find User
@@ -82,7 +82,7 @@ export default class DataModelRoute extends BaseRoute {
       }
 
       resolve(generateResponse(query.paginate, result, query.limit, query.skip, await this.model.count()));
-    });  
+    });
   }
 
   // Get User

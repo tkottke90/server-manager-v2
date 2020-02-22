@@ -26,12 +26,12 @@ export default class Application {
 
   public database: Sequelize;
 
+  // Authentication
+  public authentication: AuthenticationService;
+
   // Socket IO Properties
   private server: Server;
   private ioServer: io.Server;
-
-  // Authentication
-  public authentication: AuthenticationService;
 
   constructor(options?: IApplicationOptions) {
     this.database = sequelize();
