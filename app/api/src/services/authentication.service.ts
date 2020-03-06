@@ -101,12 +101,7 @@ export default class AuthenticationService {
   }
 
   public refreshToken = async (token: string): Promise<string | boolean> => {
-    try {
-      let validToken = jwt.verify(token, this.secret);
-    } catch (err) {
-      this.logger.log('debug', `Error validating token: ${err.message}`);
-      return false;
-    }
+    let validToken = jwt.verify(token, this.secret);
 
     if (validToken) {
       const tokenContents: any = jwt.decode(token);
