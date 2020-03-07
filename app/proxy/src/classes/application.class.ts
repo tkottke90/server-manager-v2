@@ -12,7 +12,6 @@ export default class Application {
 
   constructor() {
     this.express = express();
-    this.express.use(express.json());
 
     this.logger = logger;
     this.environment = environment;
