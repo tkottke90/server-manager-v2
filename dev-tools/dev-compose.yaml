@@ -16,7 +16,7 @@ services:
             - SALT=15
             - TOKEN_LIFESPAN=1h
         ports:
-            - 3001:3001
+            - 127.0.0.1:3001:3001
         volumes:
             - ./logs/api/:/usr/app/logs
             - /var/run/docker.sock:/var/run/docker.sock
@@ -29,4 +29,4 @@ services:
             POSTGRES_USER: postgres
             POSTGRES_PASSWORD: postgres
         ports:
-            - 5432:5432
+            - 127.0.0.1:5432:5432
