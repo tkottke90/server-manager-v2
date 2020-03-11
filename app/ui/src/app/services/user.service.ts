@@ -23,8 +23,17 @@ export class UserService {
   }
 
   async login(username: string, password: string) {
-    const result: any = await this.http.post(`authenticate`, { email: username, password });
+    let result;
+    try {
+      result = await this.http.post(`authenticate`, { email: username, password });
+    } catch (err) {
+      return false
+    }
+
+    console.dir(result);
+
     window.sessionStorage.setItem('token', result.token);
+    return true
   }
 
   logout() {
