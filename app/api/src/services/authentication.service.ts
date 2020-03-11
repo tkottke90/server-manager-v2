@@ -101,7 +101,7 @@ export default class AuthenticationService {
   }
 
   public refreshToken = async (token: string): Promise<string | boolean> => {
-    let validToken = jwt.verify(token, this.secret);
+    const validToken = jwt.verify(token, this.secret);
 
     if (validToken) {
       const tokenContents: any = jwt.decode(token);
@@ -142,9 +142,7 @@ export default class AuthenticationService {
         try {
           const { User } = app.database.models;
 
-          console.time('query');
           const user: any = await User.findOne({ where: { email: username } });
-          console.timeEnd('query');
 
           if (!user) {
             return done(null, false, { message: 'Invalid Username or Password' });
