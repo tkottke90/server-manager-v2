@@ -33,8 +33,8 @@ mat-sidenav {
 }
 
 .content {
-  width: 100%;
-  height: 100%; 
+  width: 100vw;
+  height: calc(100vh - 4rem); 
 
   overflow-y: auto;
   overflow-x: hidden;
