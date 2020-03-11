@@ -10,7 +10,16 @@
 			"ordered-imports": false,
 			"object-literal-sort-keys": false,
 			"max-classes-per-file": false,
-			"no-string-literal": false
+			"no-string-literal": false,
+			"max-line-length": [
+				false,
+				{
+					"limit": 140,
+					"ignore-pattern": "^import |^export {(.*?)}",
+					"check-strings": true,
+					"check-regex": true
+				}
+			]
 	},
 	"jsRules": {
     "object-literal-sort-keys": false
