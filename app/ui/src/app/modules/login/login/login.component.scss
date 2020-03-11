@@ -1,0 +1,24 @@
+@import '../../../styles/mixins.scss';
+
+mat-card {
+  margin: 2rem auto;
+  width: 30rem;
+
+  display: grid;
+  
+  @include media(31rem) {
+    width: 90vw;
+  }
+}
+
+mat-card-content {
+  display: flex;
+  flex-direction: column;
+  margin-left: 5rem;
+  max-width: 20rem;
+}
+
+mat-card-actions {
+  display: flex;
+  justify-content: flex-end;
+}
