@@ -22,7 +22,8 @@
       "@modules/*": ["src/app/modules/*"],
       "@components": ["src/app/components/components.module"],
       "@services/*": [ "src/app/services/*" ],
-      "@guards/*": ["src/app/guards/*"]
+      "@guards/*": ["src/app/guards/*"],
+      "@styles/*": ["src/app/styles/*"]
     }
   },
   "angularCompilerOptions": {
