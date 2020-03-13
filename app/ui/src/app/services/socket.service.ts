@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import * as io from 'socket.io-client';
+import { fromEvent } from 'rxjs';
 
 export interface ISocketEvent {
   event: string;
   token?: string;
-  data: any[] | undefined;
+  data: any[];
 }
 
 @Injectable({
@@ -12,7 +13,7 @@ export interface ISocketEvent {
 })
 export class SocketService {
 
-  socket: SocketIOClient.Socket;
+  private socket: SocketIOClient.Socket;
 
   constructor() {
     this.socket = io({
@@ -23,11 +24,12 @@ export class SocketService {
   }
 
   
-  listen(eventName: string, action: (...args) => any) {
-    this.socket.on(eventName, action);
-  }
+  listen(eventName: string) {
+    // this.socket.on(eventName, action);
+    return fromEvent<any[]>(this.socket, 'get containers')
+  } 
 
   emit(socketEvent: ISocketEvent) {
-    this.socket.emit(socketEvent.event, socketEvent.token, ...socketEvent.data);
+    this.socket.emit(socketEvent.event, ...[socketEvent.token, ...socketEvent.data]);
   }
 }
