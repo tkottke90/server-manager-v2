@@ -15,6 +15,12 @@ const logProvider = (provider: proxy.LogProvider) => {
     return logger;
 };
 
+app.express.use(proxy('/socket.io', {
+	target: app.environment.API_URL,
+	changeOrigin: true,
+	ws: true
+}));
+
 app.express.use('/api', proxy({
     target: app.environment.API_URL,
     changeOrigin: true,
