@@ -1,14 +1,13 @@
 import express, { request, response } from 'express';
 import * as io from 'socket.io';
 import { createServer, Server } from 'http';
-import * as fs from 'fs';
-import * as path from 'path';
-import { promisify } from 'util';
 
 import logger from '../services/logger.service';
 import { Logger } from '../services/logger.service';
 import environment from '../services/environment.service';
+
 import AuthenticationService from '../services/authentication.service';
+import { SocketService } from '../services/socket.service';
 
 import { Sequelize } from 'sequelize';
 import sequelize from '../models/index';
@@ -28,22 +27,25 @@ export default class Application {
 
   // Authentication
   public authentication: AuthenticationService;
+  private ioServer: io.Server;
+  public socketService: SocketService;
 
   // Socket IO Properties
   private server: Server;
-  private ioServer: io.Server;
 
   constructor(options?: IApplicationOptions) {
+    this.logger = logger;
+    this.environment = environment;
     this.database = sequelize();
+
+    this.socketService = new SocketService(this);
 
     this.express = express();
     this.express.use(express.json());
 
     this.server = createServer(this.express);
     this.ioServer = require('socket.io')(this.server);
-
-    this.logger = logger;
-    this.environment = environment;
+    this.ioServer.on('connect', this.socketService.newSocket);
 
     this.port = environment.PORT;
 
