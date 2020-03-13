@@ -44,7 +44,7 @@ export default class Application {
     this.express.use(express.json());
 
     this.server = createServer(this.express);
-    this.ioServer = require('socket.io')(this.server);
+    this.ioServer = require('socket.io')(this.server, { transports: ['websocket'] });
     this.ioServer.on('connect', this.socketService.newSocket);
 
     this.port = environment.PORT;
