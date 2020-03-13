@@ -34,6 +34,8 @@ class DockerRoute extends BaseRoute {
           { method: 'get', path: '/containers/:name', action: this.getContainerByName, beforeHooks: [ app.authentication.jwtAuth ] }
         ]
       });
+
+      this.app.socketService.register({ name: 'get containers', action: this.getContainers});
     });
   }
 
