@@ -19,11 +19,11 @@ export class DockerService {
     this.getContainerEvent = this.socketService.listen('get containers');
   }
 
-  getContainers() {
-    this.socketService.emit({ event: 'get containers', data: []});
+  getContainers({ all } = { all: false}) {
+    this.socketService.emit({ event: 'get containers', data: { params: { all } } });
   }
-  
-  getContainer(name: String) {
-    this.socketService.emit({ event: 'get container', data: [{ name }]})
+
+  getContainer(name: string) {
+    this.socketService.emit({ event: 'get container', data: { query: { name } } });
   }
 }
