@@ -1,4 +1,6 @@
 import { Component, OnInit, ChangeDetectionStrategy, Input } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { DockerInfoModalComponent } from 'src/app/components/docker-info-modal/docker-info-modal.component';
 
 interface IDockerContainerPorts {
   IP?: string;
@@ -47,8 +49,14 @@ export class DockerCardComponent {
 
   @Input() container: any;
 
-  getLocalDate(date: number) {
-    return new Date(date *   1000).toLocaleString();
-  }
+  constructor(
+    private dialog: MatDialog
+  ) {}
 
+  openDetailsDialog($event) {
+    this.dialog.open(DockerInfoModalComponent, {
+      data: this.container,
+      width: '60vw'
+    });
+  }
 }

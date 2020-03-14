@@ -13,8 +13,9 @@
   }
 }
 
-.dc-info--content {
-  display: grid;
+.dc-info--subtitle {
+  display: flex;
+  justify-content: space-between;
 }
 
 .dc-status {
