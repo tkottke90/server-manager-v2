@@ -26,8 +26,8 @@ export class SocketService {
   
   listen(eventName: string) {
     // this.socket.on(eventName, action);
-    return fromEvent<any[]>(this.socket, 'get containers')
-  } 
+    return fromEvent<any[]>(this.socket, eventName);
+  }
 
   emit(socketEvent: ISocketEvent) {
     this.socket.emit(socketEvent.event, ...[socketEvent.token, ...socketEvent.data]);
