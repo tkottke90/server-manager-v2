@@ -6,6 +6,9 @@ import { ComponentsModule } from '../../components/components.module';
 
 import { AuthGuard } from '@guards/auth.guard';
 
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+
 import { HomeComponent } from './home/home.component';
 
 const routes: Route[] = [
@@ -17,7 +20,10 @@ const routes: Route[] = [
   imports: [
     CommonModule,
     ComponentsModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
+    // Material
+    MatButtonModule,
+    MatCardModule
   ]
 })
 export class HomeModule { }

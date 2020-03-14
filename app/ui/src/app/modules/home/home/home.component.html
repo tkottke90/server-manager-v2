@@ -1,3 +1,14 @@
 <sm-base [menuEnabled]="true">
+    <div sidenav-content>
+      <hr>
+      <button class="sidenav-button" mat-button color="primary" (click)="logout()">Logout</button>
+    </div>
+  
     <span  toolbar-title>Sever Manager</span>
+
+    <div toolbar-actions class="toolbar-actions">
+        <div class="status" [attr.color]="socketStatus" ></div>
+    </div>
+
+    <button mat-raised-button color="primary" (click)="getContainers()">Docker Containers</button>
 </sm-base>
