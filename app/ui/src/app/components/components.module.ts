@@ -8,18 +8,21 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 
 import { BaseComponent } from './base/base.component';
+import { DockerInfoModalComponent } from './docker-info-modal/docker-info-modal.component';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
-  declarations: [BaseComponent],
+  declarations: [BaseComponent, DockerInfoModalComponent],
   imports: [
     CommonModule,
     // Angular Material
     MatButtonModule,
+    MatDialogModule,
     MatIconModule,
     MatSidenavModule,
     MatToolbarModule
   ],
-  exports: [ BaseComponent ]
+  exports: [ BaseComponent, DockerInfoModalComponent ]
 })
 export class ComponentsModule {
   constructor(matIconRegistry: MatIconRegistry, domSanitizer: DomSanitizer){

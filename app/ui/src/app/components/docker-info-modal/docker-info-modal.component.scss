@@ -1,0 +1,43 @@
+h3 {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1.5rem;
+
+  span {
+    color: rgba(0,0,0,0.35);
+  }
+} 
+
+mat-dialog-content {
+  display: flex;
+  flex-wrap: wrap;
+
+  span, p {
+    &[color="fade-grey"] {
+      color: rgba(0,0,0,0.35);
+    }
+  }
+}
+
+.docker-modal--image {
+  white-space: nowrap;
+  width: 100%;
+  text-overflow: ellipsis;
+  overflow: hidden;
+
+  span {
+    margin-left: 2rem;
+  }
+}
+
+.docker-modal--create {
+  flex: 0 0 100%;
+}
+
+
+
+
+mat-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+}

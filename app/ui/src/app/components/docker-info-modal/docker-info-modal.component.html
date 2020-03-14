@@ -1,0 +1,12 @@
+<h3 mat-dialog-title>{{ getContainerDisplayName(data.Names) }} <span>{{  getContainerDisplaySha(data.Id) }}</span></h3>
+<mat-dialog-content>
+  <p class="docker-modal--image"><strong>Image:</strong> {{ data.Image }} <span color="fade-grey">{{ data.ImageID }}</span></p>
+  <p class="docker-modal--create"><strong>Created At:</strong> {{ getLocalDate(data.Created) }}</p>
+  <p><strong>Status:</strong> {{ data.Status }}</p>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button color="primary" [mat-dialog-close]="true">Close</button>
+  <button mat-raised-button color="primary" *ngIf="containerDetails?.State.Running">Stop</button>
+  <button mat-raised-button color="primary" *ngIf="containerDetails?.State.Running">Restart</button>
+  <button mat-raised-button color="primary" *ngIf="!containerDetails?.State.Running">Start</button>
+</mat-dialog-actions>
