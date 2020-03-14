@@ -38,6 +38,6 @@ export class UserService {
 
   logout() {
     this.currentUser.next(null);
-    window.sessionStorage.removeItem('token')
+    window.sessionStorage.removeItem('token');
   }
 }
