@@ -16,6 +16,10 @@ mat-card-content {
   flex-direction: column;
   margin-left: 5rem;
   max-width: 20rem;
+
+  @include media(31rem) {
+    margin-left: unset;
+  }
 }
 
 mat-card-actions {
