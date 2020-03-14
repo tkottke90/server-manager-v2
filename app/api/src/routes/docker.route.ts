@@ -36,7 +36,7 @@ class DockerRoute extends BaseRoute {
       });
 
       this.app.socketService.register({ name: 'get containers', action: this.getContainers});
-      this.app.socketService.register({ name: 'get containers', action: this.getContainerByName});
+      this.app.socketService.register({ name: 'get container', action: this.getContainerByName});
     });
   }
 
@@ -56,8 +56,6 @@ class DockerRoute extends BaseRoute {
   }
 
   public getContainerByName = (context: IContext) => {
-    const containerName = context.params
-    
     return new Promise(async (resolve, reject) => {
       this.httpRequest(
         { method: 'GET', path: `/containers/${context.params.name}/json`, timeout: 3000 },
