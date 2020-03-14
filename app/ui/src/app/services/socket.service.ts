@@ -5,7 +5,7 @@ import { fromEvent, BehaviorSubject } from 'rxjs';
 export interface ISocketEvent {
   event: string;
   token?: string;
-  data: any[];
+  data: any;
 }
 
 @Injectable({
@@ -52,6 +52,6 @@ export class SocketService {
   }
 
   emit(socketEvent: ISocketEvent) {
-    this.socket.emit(socketEvent.event, ...[socketEvent.token, ...socketEvent.data]);
+    this.socket.emit(socketEvent.event, [socketEvent.token, socketEvent.data]);
   }
 }
