@@ -136,6 +136,10 @@ $server-manager-ui-theme: mat-light-theme($server-manager-ui-primary, $server-ma
 html, body { height: 100vh; width: 100vw; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
+mat-sidenav {
+    width: 256px;
+}
+
 .mat-drawer-inner-container {
     height: 100vh !important;
     overflow: hidden !important;
