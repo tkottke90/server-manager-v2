@@ -1,0 +1,23 @@
+@import '../../../styles/mixins.scss';
+
+.led {
+  @include led();
+}
+
+.dc-info {
+  margin: 1rem 0;
+  cursor: pointer;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.2);
+  }
+}
+
+.dc-info--content {
+  display: grid;
+}
+
+.dc-status {
+  display: flex;
+  justify-content: space-between;
+}

@@ -15,6 +15,8 @@ export class HomeComponent implements OnInit {
 
   socketStatus = 'red';
 
+  containers = [];
+
   constructor(
     private router: Router,
     private socketService: SocketService,
@@ -24,21 +26,20 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
     this.dockerService.getContainerEvent.subscribe( data => {
-      console.dir(data);
+      this.containers = data[0];
+      console.log(data[0]);
     });
 
     this.socketService.socketStatus.subscribe( status => {
       this.socketStatus = status ? 'green' : 'red';
     });
+
+    this.dockerService.getContainers({ all: true });
   }
 
   logout() {
     this.userService.logout();
     this.router.navigateByUrl('/login');
-  }
-
-  getContainers() {
-    this.dockerService.getContainers();
   }
 
 }

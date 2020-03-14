@@ -1,0 +1,11 @@
+<mat-card class="dc-info">
+  <mat-card-title class="dc-status">
+    <span>{{ container.Names[0].replace('/', '') }}</span>
+    <div class="led" [attr.color]="container.State  === 'running' ? 'green' : 'red'"></div>
+  </mat-card-title>
+  <mat-card-subtitle>Image: {{ container.Image }}</mat-card-subtitle>
+  <mat-card-content class="dc-info--content">
+    <p><strong>Created At:</strong> {{ getLocalDate(container.Created ) }}</p>
+    <p><strong>Status:</strong> {{ container.Status }}</p>
+  </mat-card-content>
+</mat-card>

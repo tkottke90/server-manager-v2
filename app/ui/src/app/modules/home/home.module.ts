@@ -10,13 +10,14 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 
 import { HomeComponent } from './home/home.component';
+import { DockerCardComponent } from './docker-card/docker-card.component';
 
 const routes: Route[] = [
   { path: '', component: HomeComponent, canActivate: [AuthGuard] }
 ]
 
 @NgModule({
-  declarations: [ HomeComponent ],
+  declarations: [ HomeComponent, DockerCardComponent ],
   imports: [
     CommonModule,
     ComponentsModule,
