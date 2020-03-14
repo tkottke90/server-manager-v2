@@ -8,6 +8,7 @@ import { Observable, fromEvent } from 'rxjs';
 export class DockerService {
 
   getContainerEvent: Observable<any[]>;
+  getContainerByName: Observable<any[]>;
 
   constructor(
     private socketService: SocketService
@@ -17,6 +18,7 @@ export class DockerService {
 
   init() {
     this.getContainerEvent = this.socketService.listen('get containers');
+    this.getContainerByName = this.socketService.listen('get container');
   }
 
   getContainers({ all } = { all: false}) {
@@ -24,6 +26,6 @@ export class DockerService {
   }
 
   getContainer(name: string) {
-    this.socketService.emit({ event: 'get container', data: { query: { name } } });
+    this.socketService.emit({ event: 'get container', data: { params: { name } } });
   }
 }
