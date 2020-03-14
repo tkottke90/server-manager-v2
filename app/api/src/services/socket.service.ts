@@ -75,23 +75,25 @@ export class SocketService {
   }
   
   private generateSocketEventHandler(socketEvent: ISocketEndpoint) {
-    logger.log('debug', `Configuring Socket Event:  ${socketEvent.name}`)
+    logger.log('debug', `Configuring Socket Event:  ${socketEvent.name}`);
 
-    const outputAction = (socket: Socket) => async ($data: any) => {
+    const outputAction = (socket: Socket) => async ($data: any[]) => {
+      logger.log('debug', `Socket Request: ${socketEvent.name}`, {data: $data});
+
       const _beforeHooks = socketEvent.beforeHooks || [];
       const _afterHooks = socketEvent.afterHooks || [];
       const _errorHooks = socketEvent.errorHooks || [];
 
       let data;
-      switch(typeof $data) {
+      switch(typeof $data[1]) {
         case 'string':
-          data = { params: data, query: {}, data: data, user: undefined }
+          data = { params: {}, query: {}, data: $data, user: undefined };
           break;
         case 'object':
-          data = Object.assign({ params: {}, query: {}, data: data, user: undefined }, $data);
+          data = Object.assign({ params: {}, query: {}, data: $data[1].data, user: undefined }, $data[1]);
           break;
         default :
-          data = data = { params: {}, query: {}, data: data, user: undefined }
+          data = data = { params: {}, query: {}, data: $data, user: undefined };
       }
 
       let context: IContext = {
@@ -101,9 +103,9 @@ export class SocketService {
         method: socketEvent.name,
         params: data.params,
         query: data.query,
-        data: data,
+        data,
         user: data.user,
-      }
+      };
 
       const errorHandler = this.handleError(_errorHooks);
 

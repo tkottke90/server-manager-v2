@@ -41,9 +41,12 @@ class DockerRoute extends BaseRoute {
   }
 
   public getContainers = (context: IContext) => {
+    const all = context.params.all ? 'true' : 'false';
+    console.log('get containers');
+    console.dir(context);
     return new Promise(async (resolve, reject) => {
       this.httpRequest(
-        { method: 'GET', path: '/containers/json', timeout: 3000 },
+        { method: 'GET', path: `/containers/json?all=${all}`, timeout: 3000 },
         { onEnd: (error: boolean, output: string) => {
           if (error) {
             reject('Error occurred getting containers');
