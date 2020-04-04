@@ -1,0 +1,15 @@
+[Unit]
+Description=Get Host Data Listener
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=on-failure
+RestartSec=2
+User=altotom90
+Environment=PATH=#{PATH}
+Environment=SERVER_HOME=#{HOME}
+ExecStart=/usr/bin/env node #{HOME}/scripts/runtime/get-host.js
+
+[Install]
+WantedBy=multi-user.target
